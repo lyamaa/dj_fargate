@@ -3,14 +3,12 @@ version: '3.9'
 volumes:
   postgres_data:
   backend_data:
-  
 
 services:
   backend: &backend
-    container_name: backend
     build: .
     ports:
       - "8000:8000"
     volumes:
       - backend_data:/app
-    command: gunicorn src.wsgi:application --bind 0.0.0.0:8000
+    command: gunicorn src.asgi:application -w 2 -k uvicorn.workers.UvicornWorker --log-file - --bind 0.0.0.0:8000

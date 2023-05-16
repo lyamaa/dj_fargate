@@ -12,6 +12,6 @@ RUN pip install -r requirements.txt
 
 COPY . /app
 
-CMD gunicorn  src.wsgi:application --bind 0.0.0.0:8000 --workers 4 --threads 4 --timeout 0
+CMD gunicorn src.asgi:application -w 2 -k uvicorn.workers.UvicornWorker --log-file - --bind 0.0.0.0:8000
 
 EXPOSE 8000
