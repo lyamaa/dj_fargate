@@ -117,10 +117,10 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-AWS_ACCESS_KEY_ID = "AKIAV7MZCXZLBESYVTAT"
-AWS_SECRET_ACCESS_KEY = "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"
+AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID", default="")
+AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY", default="")
 
-AWS_STORAGE_BUCKET_NAME = "dj-bucket-fargates"
+AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME", default="")
 DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 STATICFILES_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 
