@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-1+gtzp554w9-6_c)h(!x4!ty^(d7mvtj&y6h_xf-n0ytz#-a10
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -75,6 +75,17 @@ WSGI_APPLICATION = "src.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+DATABASES = {
+    # POSTGRES
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "fargate",
+        "USER": "django",
+        "PASSWORD": "helloNepal",
+        "HOST": "fargate.ckzifoaiemuu.ap-south-1.rds.amazonaws.com",
+        "PORT": "5432",
+    },
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -117,12 +128,17 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-AWS_ACCESS_KEY_ID = ""
-AWS_SECRET_ACCESS_KEY = ""
+AWS_ACCESS_KEY_ID = "AKIAV7MZCXZLBESYVTAT"
+AWS_SECRET_ACCESS_KEY = "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"
 
-AWS_STORAGE_BUCKET_NAME = ""
+AWS_STORAGE_BUCKET_NAME = "dj-bucket-fargates"
 DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 STATICFILES_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 
 AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"
 AWS_s3_FILE_OVERWRITE = False
+
+
+# only if django version >= 3.0
+X_FRAME_OPTIONS = "SAMEORIGIN"
+SILENCED_SYSTEM_CHECKS = ["security.W019"]
