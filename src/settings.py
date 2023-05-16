@@ -117,6 +117,8 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+# These lines of code are configuring the settings for using Amazon S3 storage for static and media
+# files in a Django project.
 AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID", default="")
 AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY", default="")
 
@@ -129,10 +131,19 @@ AWS_s3_FILE_OVERWRITE = False
 
 
 # only if django version >= 3.0
+# `X_FRAME_OPTIONS = "SAMEORIGIN"` is a security measure that prevents the website from being embedded
+# in an iframe on another website. It sets the `X-Frame-Options` header to `SAMEORIGIN`, which means
+# that the website can only be embedded in an iframe on a page with the same origin (i.e. the same
+# domain and protocol).
 X_FRAME_OPTIONS = "SAMEORIGIN"
 SILENCED_SYSTEM_CHECKS = ["security.W019"]
 
 
+# This code block is setting up secure SSL redirection and proxy SSL header settings for the Django
+# project if the `DEBUG` setting is set to `False`. This is important for production environments
+# where the website should be served over HTTPS for security reasons. The `SECURE_SSL_REDIRECT`
+# setting ensures that all HTTP requests are redirected to HTTPS, while `SECURE_PROXY_SSL_HEADER` sets
+# the header that should be used to determine whether the request was made over HTTPS or not.
 if not DEBUG:
     SECURE_SSL_REDIRECT = True
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
