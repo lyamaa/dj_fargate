@@ -1,5 +1,7 @@
+import logging
 from pathlib import Path
 import environ
+import requests
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -9,13 +11,32 @@ env = environ.Env()
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-1+gtzp554w9-6_c)h(!x4!ty^(d7mvtj&y6h_xf-n0ytz#-a10"
+SECRET_KEY = env("SECRET_KEY", default="")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool("DEBUG", default=False)
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=[])
 
-ALLOWED_HOSTS = ["*"]
+# This code block is attempting to fetch the private IP address of the container running
+# the Django application by making a request to the metadata URI. If successful, it adds
+# the private IP address to the `ALLOWED_HOSTS` list, which allows the container to
+# receive requests from that IP address. this is useful in a containerized environment
+# where the IP address of the container may change dynamically. If the metadata request
+# fails or the private IP address cannot be found, it logs an error message and does not
+# add anything to the `ALLOWED_HOSTS` list.
+PRIVATE_IP = None
+METADATA_URI = env.get("METADATA_URI", default="")
 
+try:
+    res = requests.get(METADATA_URI)
+    data = res.json()
+    resp_meta_uri = data["containers"][0]
+    PRIVATE_IP = resp_meta_uri["networks"][0]["ipv4Addresses"][0]
+except Exception as e:
+    logging.error(f"Error while fetching metadata: {e}")
+
+if PRIVATE_IP:
+    ALLOWED_HOSTS.append(PRIVATE_IP)
 
 # Application definition
 
@@ -137,6 +158,7 @@ AWS_s3_FILE_OVERWRITE = False
 # page with the same origin (i.e. the same domain and protocol).
 X_FRAME_OPTIONS = "SAMEORIGIN"
 SILENCED_SYSTEM_CHECKS = ["security.W019"]
+CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=[])
 
 
 # This code block is setting up secure SSL redirection and proxy SSL header settings for

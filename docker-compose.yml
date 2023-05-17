@@ -11,4 +11,6 @@ services:
       - "8000:8000"
     volumes:
       - backend_data:/app
+    image: backend:django
+    container_name: backend
     command: gunicorn src.asgi:application -w 2 -k uvicorn.workers.UvicornWorker --log-file - --bind 0.0.0.0:8000
